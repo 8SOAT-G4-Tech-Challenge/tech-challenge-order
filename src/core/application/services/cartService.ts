@@ -39,7 +39,7 @@ export class CartService {
 			);
 		}
 
-		logger.info('Searching all order items by order id');
+		logger.info('[CART SERVICE] Searching all order items by order id');
 		return this.cartRepository.getAllCartItemsByOrderId(orderId);
 	}
 
@@ -65,7 +65,7 @@ export class CartService {
 			product.productId
 		);
 
-		logger.info(`Adding item to order: ${order.id}`);
+		logger.info(`[CART SERVICE] Adding item to order: ${order.id}`);
 		return this.cartRepository.addItemToCart({
 			...product,
 			value: product.quantity * productItem.value,
@@ -95,7 +95,7 @@ export class CartService {
 			cartItem.productId
 		);
 
-		logger.info(`Updating cart item: ${item.id}`);
+		logger.info(`[CART SERVICE] Updating cart item: ${item.id}`);
 		return this.cartRepository.updateCartItem({
 			...item,
 			value: item.quantity * productItem.value,
@@ -109,7 +109,7 @@ export class CartService {
 			);
 		}
 
-		logger.info(`Deleting cart item: ${id}`);
+		logger.info(`[CART SERVICE] Deleting cart item: ${id}`);
 		await this.cartRepository.deleteCartItem(id);
 	}
 }

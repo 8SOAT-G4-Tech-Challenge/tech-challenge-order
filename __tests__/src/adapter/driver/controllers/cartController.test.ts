@@ -1,6 +1,6 @@
-import { AddItemToCartMockBuilder } from '@tests/mocks/add-item-to-cart.mock-builder';
 import { CartController } from '@src/adapter/driver/controllers/cartController';
 import logger from '@src/core/common/logger';
+import { AddItemToCartMockBuilder } from '@tests/mocks/add-item-to-cart.mock-builder';
 
 describe('CartController -> Test', () => {
 	let controller: CartController;
@@ -37,7 +37,9 @@ describe('CartController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(201);
 			expect(reply.send).toHaveBeenCalledWith(addItemToCart);
-			expect(loggerSpy).toHaveBeenCalledWith('Adding item to order: 1');
+			expect(loggerSpy).toHaveBeenCalledWith(
+				'[CART CONTROLLER] Adding item to order: 1'
+			);
 		});
 
 		test('should fail to add item to cart', async () => {
@@ -62,14 +64,16 @@ describe('CartController -> Test', () => {
 			await controller.addItemToCart(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when trying to add product to cart: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/cart-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/cart-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -90,7 +94,9 @@ describe('CartController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalledWith(addItemToCart);
-			expect(loggerSpy).toHaveBeenCalledWith('Updating cart item 1');
+			expect(loggerSpy).toHaveBeenCalledWith(
+				'[CART CONTROLLER] Updating cart item 1'
+			);
 		});
 
 		test('should fail to update cart item', async () => {
@@ -115,14 +121,16 @@ describe('CartController -> Test', () => {
 			await controller.updateCartItem(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when trying to update cart: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/update-cart-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/update-cart-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -143,7 +151,9 @@ describe('CartController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalled();
-			expect(loggerSpy).toHaveBeenCalledWith('Deleting cart item 1');
+			expect(loggerSpy).toHaveBeenCalledWith(
+				'[CART CONTROLLER] Deleting cart item 1'
+			);
 		});
 
 		test('should fail to add item to cart', async () => {
@@ -168,14 +178,16 @@ describe('CartController -> Test', () => {
 			await controller.deleteCartItem(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when trying to delete cart: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/delete-cart-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/delete-cart-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 });

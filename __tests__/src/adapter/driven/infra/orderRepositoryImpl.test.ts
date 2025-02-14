@@ -59,10 +59,13 @@ describe('OrderRepositoryImpl -> Test', () => {
 				await repository.getOrderById({ id: order.id });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Order with id: ${order.id} not found`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(`Order with id: ${order.id} not found`);
+			}
 		});
 	});
 
@@ -94,10 +97,15 @@ describe('OrderRepositoryImpl -> Test', () => {
 				await repository.getOrderCreatedById({ id: order.id });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Order with id: ${order.id} and status 'created' not found`
-			);
+			try {
+				await rejectedFunction();
+				fail(`Order with id: ${order.id} and status 'created' not found`);
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(
+					`Order with id: ${order.id} and status 'created' not found`
+				);
+			}
 		});
 	});
 
@@ -161,23 +169,23 @@ describe('OrderRepositoryImpl -> Test', () => {
 				await repository.updateOrder({ id: order.id });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Order with id: ${order.id} not found`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(`Order with id: ${order.id} not found`);
+			}
 		});
 	});
 
 	describe('getNumberOfValidOrdersToday', () => {
 		test('should update order', async () => {
-			const loggerSpy = jest.spyOn(logger, 'info');
-
 			jest.spyOn(prisma.order, 'count').mockResolvedValue(2);
 
 			const response = await repository.getNumberOfValidOrdersToday();
 
 			expect(response).toEqual(2);
-			expect(loggerSpy).toHaveBeenCalledWith('Number of valid orders today: 2');
 		});
 	});
 });

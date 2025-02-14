@@ -8,6 +8,7 @@ import { Order } from '@models/order';
 import {
 	CreateOrderParams,
 	GetOrderByIdParams,
+	GetOrderByIdQueryParams,
 	GetOrderQueryParams,
 	UpdateOrderParams,
 } from '@ports/input/orders';
@@ -39,14 +40,19 @@ export class OrderController {
 	}
 
 	async getOrderById(
-		req: FastifyRequest<{ Params: GetOrderByIdParams }>,
+		req: FastifyRequest<{
+			Params: GetOrderByIdParams;
+			Query: GetOrderByIdQueryParams;
+		}>,
 		reply: FastifyReply
 	) {
 		try {
 			logger.info('Listing order by id');
-			const order: CreateOrderResponse = await this.orderService.getOrderById(
-				req?.params
-			);
+			const order: CreateOrderResponse = await this.orderService.getOrderById({
+				...req?.params,
+				// @ts-expect-error typescript
+				...req?.query,
+			});
 			reply.code(StatusCodes.OK).send(order);
 		} catch (error) {
 			logger.error(
@@ -95,6 +101,17 @@ export class OrderController {
 					error?.response?.message
 				)}`
 			);
+			handleError(req, reply, error);
+		}
+	}
+
+	async getNumberOfValidOrdersToday(req: FastifyRequest, reply: FastifyReply) {
+		try {
+			logger.info('[ORDER CONTROLLER] Getting number of valid orders today');
+			const numberValidOrders: number =
+				await this.orderService.getNumberOfValidOrdersToday();
+			reply.code(StatusCodes.OK).send(numberValidOrders);
+		} catch (error) {
 			handleError(req, reply, error);
 		}
 	}

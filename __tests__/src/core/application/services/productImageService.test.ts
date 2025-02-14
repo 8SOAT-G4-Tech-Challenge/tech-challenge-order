@@ -1,6 +1,6 @@
-import { ProductImageMockBuilder } from '@tests/mocks/product-image.mock-builder';
 import { InvalidProductImageException } from '@src/core/application/exceptions/invalidProductImageException';
 import { ProductImageService } from '@src/core/application/services/productImageService';
+import { ProductImageMockBuilder } from '@tests/mocks/product-image.mock-builder';
 
 describe('ProductImageService -> Test', () => {
 	let service: ProductImageService;
@@ -21,19 +21,24 @@ describe('ProductImageService -> Test', () => {
 	});
 
 	describe('getProductImageById', () => {
-		test('should throw InvalidProductCategoryException', async () => {
+		test('should throw InvalidProductImageException', async () => {
 			const rejectedFunction = async () => {
 				// @ts-expect-error typescript
 				await service.getProductImageById({ id: undefined });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductImageException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Error listing product image by Id. Invalid Id: ${undefined}`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown an InvalidProductImageException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductImageException);
+				expect(error.message).toBe(
+					`Error listing product image by Id. Invalid Id: ${undefined}`
+				);
+			}
 		});
 
-		test('should get all product categories', async () => {
+		test('should get product image by ID', async () => {
 			const productImage = new ProductImageMockBuilder()
 				.withDefaultValues()
 				.build();
@@ -48,7 +53,9 @@ describe('ProductImageService -> Test', () => {
 
 			expect(
 				mockProductImageRepository.getProductImageById
-			).toHaveBeenCalledWith({ id: productImage.id });
+			).toHaveBeenCalledWith({
+				id: productImage.id,
+			});
 			expect(response).toEqual(productImage);
 		});
 	});

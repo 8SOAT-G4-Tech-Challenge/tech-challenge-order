@@ -1,11 +1,11 @@
+import { InvalidProductException } from '@src/core/application/exceptions/invalidProductException';
+import { CartService } from '@src/core/application/services/cartService';
+import logger from '@src/core/common/logger';
 import { AddItemToCartMockBuilder } from '@tests/mocks/add-item-to-cart.mock-builder';
 import { OrderItemMockBuilder } from '@tests/mocks/order-item.mock-builder';
 import { OrderMockBuilder } from '@tests/mocks/order.mock-builder';
 import { ProductMockBuilder } from '@tests/mocks/product.mock-builder';
 import { UpdateCartItemMockBuilder } from '@tests/mocks/update-cart-item.mock-builder';
-import { InvalidProductException } from '@src/core/application/exceptions/invalidProductException';
-import { CartService } from '@src/core/application/services/cartService';
-import logger from '@src/core/common/logger';
 
 describe('CartService -> Test', () => {
 	let service: CartService;
@@ -46,10 +46,14 @@ describe('CartService -> Test', () => {
 				await service.getAllCartItemsByOrderId();
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'Must provide an order id to get order items'
-			);
+			try {
+				await rejectedFunction();
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe(
+					'Must provide an order id to get order items'
+				);
+			}
 		});
 
 		test('should test success path', async () => {
@@ -71,7 +75,7 @@ describe('CartService -> Test', () => {
 			);
 			expect(response).toEqual(result);
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Searching all order items by order id'
+				'[CART SERVICE] Searching all order items by order id'
 			);
 		});
 	});
@@ -88,10 +92,14 @@ describe('CartService -> Test', () => {
 				await service.addItemToCart(product);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				"There's a problem with parameters sent, check documentation"
-			);
+			try {
+				await rejectedFunction();
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe(
+					"There's a problem with parameters sent, check documentation"
+				);
+			}
 		});
 
 		test('should throw quantity related InvalidProductException', async () => {
@@ -104,10 +112,14 @@ describe('CartService -> Test', () => {
 				await service.addItemToCart(product);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'The quantity must be equal or less than 99'
-			);
+			try {
+				await rejectedFunction();
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe(
+					'The quantity must be equal or less than 99'
+				);
+			}
 		});
 
 		test('should test success path', async () => {
@@ -143,7 +155,7 @@ describe('CartService -> Test', () => {
 			});
 			expect(response).toEqual(result);
 			expect(loggerSpy).toHaveBeenCalledWith(
-				`Adding item to order: ${order.id}`
+				`[CART SERVICE] Adding item to order: ${order.id}`
 			);
 		});
 	});
@@ -160,10 +172,14 @@ describe('CartService -> Test', () => {
 				await service.updateCartItem(product);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				"There's a problem with parameters sent, check documentation"
-			);
+			try {
+				await rejectedFunction();
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe(
+					"There's a problem with parameters sent, check documentation"
+				);
+			}
 		});
 
 		test('should throw quantity related InvalidProductException', async () => {
@@ -176,10 +192,14 @@ describe('CartService -> Test', () => {
 				await service.updateCartItem(product);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'The quantity must be equal or less than 99'
-			);
+			try {
+				await rejectedFunction();
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe(
+					'The quantity must be equal or less than 99'
+				);
+			}
 		});
 
 		test('should test success path', async () => {
@@ -215,7 +235,9 @@ describe('CartService -> Test', () => {
 				value: item.quantity * productItem.value,
 			});
 			expect(response).toEqual(result);
-			expect(loggerSpy).toHaveBeenCalledWith(`Updating cart item: ${item.id}`);
+			expect(loggerSpy).toHaveBeenCalledWith(
+				`[CART SERVICE] Updating cart item: ${item.id}`
+			);
 		});
 	});
 
@@ -226,10 +248,12 @@ describe('CartService -> Test', () => {
 				await service.deleteCartItem();
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'Must provide an id to delete cart item'
-			);
+			try {
+				await rejectedFunction();
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe('Must provide an id to delete cart item');
+			}
 		});
 
 		test('should test success path', async () => {
@@ -245,7 +269,9 @@ describe('CartService -> Test', () => {
 
 			expect(mockCartRepository.deleteCartItem).toHaveBeenCalledWith(id);
 			expect(response).toEqual(undefined);
-			expect(loggerSpy).toHaveBeenCalledWith(`Deleting cart item: ${id}`);
+			expect(loggerSpy).toHaveBeenCalledWith(
+				`[CART SERVICE] Deleting cart item: ${id}`
+			);
 		});
 	});
 });

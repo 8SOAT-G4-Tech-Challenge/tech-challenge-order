@@ -44,14 +44,18 @@ export class ProductService {
 	async getProducts(filters: any): Promise<Product[]> {
 		productFilterSchema.parse(filters);
 		if (filters.category) {
-			logger.info(`Searching category by name: ${filters.category}`);
+			logger.info(
+				`[PRODUCT SERVICE] Searching category by name: ${filters.category}`
+			);
 			const productCategory =
 				await this.productCategoryService.getProductCategoryByName(
 					filters.category
 				);
 			if (productCategory) {
 				logger.info(
-					`Success search product category ${JSON.stringify(productCategory)}`
+					`[PRODUCT SERVICE] Success search product category ${JSON.stringify(
+						productCategory
+					)}`
 				);
 				return this.productRepository.getProductsByCategory(productCategory.id);
 			}
@@ -85,7 +89,9 @@ export class ProductService {
 			const uploadDir = `uploads/${id}`;
 			await this.fileStorage.deleteDirectory(uploadDir);
 
-			logger.info(`Directory for product ${id} has been removed.`);
+			logger.info(
+				`[PRODUCT SERVICE] Directory for product ${id} has been removed.`
+			);
 		} catch (error) {
 			throw new Error('An unexpected error occurred while deleting');
 		}
@@ -153,7 +159,7 @@ export class ProductService {
 			await this.handleImageUpdates(product);
 		}
 
-		logger.info(`Updating product: ${product.id}`);
+		logger.info(`[PRODUCT SERVICE] Updating product: ${product.id}`);
 		return this.productRepository.updateProducts(product);
 	}
 

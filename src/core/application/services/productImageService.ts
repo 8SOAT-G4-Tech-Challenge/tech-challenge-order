@@ -22,7 +22,7 @@ export class ProductImageService {
 			);
 		}
 
-		logger.info(`Searching product image by Id: ${id}`);
+		logger.info(`[PRODUCT IMAGE SERVICE] Searching product image by Id: ${id}`);
 
 		const productImageFound =
 			await this.productImageRepository.getProductImageById({ id });

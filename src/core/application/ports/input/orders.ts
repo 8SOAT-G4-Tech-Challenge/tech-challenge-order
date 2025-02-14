@@ -8,6 +8,11 @@ export type GetOrderByIdParams = {
 	id?: string;
 };
 
+export type GetOrderByIdQueryParams = {
+	withCustomer?: string;
+	withPayment?: string;
+};
+
 export type CreateOrderParams = {
 	customerId?: string;
 };

@@ -1,6 +1,6 @@
-import { ProductMockBuilder } from '@tests/mocks/product.mock-builder';
 import { ProductController } from '@src/adapter/driver/controllers/productController';
 import logger from '@src/core/common/logger';
+import { ProductMockBuilder } from '@tests/mocks/product.mock-builder';
 
 describe('ProductController -> Test', () => {
 	let controller: ProductController;
@@ -37,7 +37,9 @@ describe('ProductController -> Test', () => {
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalledWith([product]);
 			expect(loggerSpy).toHaveBeenCalledWith(
-				`Listing products with parameters: ${JSON.stringify(req.query)}`
+				`[PRODUCT CONTROLLER] Listing products with parameters: ${JSON.stringify(
+					req.query
+				)}`
 			);
 		});
 
@@ -55,7 +57,9 @@ describe('ProductController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalledWith([product]);
-			expect(loggerSpy).toHaveBeenCalledWith('Listing products');
+			expect(loggerSpy).toHaveBeenCalledWith(
+				'[PRODUCT CONTROLLER] Listing products'
+			);
 		});
 
 		test('should fail to list products', async () => {
@@ -74,14 +78,16 @@ describe('ProductController -> Test', () => {
 			await controller.getProducts(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when listing for products: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/list-products-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/list-products-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -100,7 +106,9 @@ describe('ProductController -> Test', () => {
 			expect(reply.send).toHaveBeenCalledWith({
 				message: 'Product successfully deleted',
 			});
-			expect(loggerSpy).toHaveBeenCalledWith('Deleting product');
+			expect(loggerSpy).toHaveBeenCalledWith(
+				'[PRODUCT CONTROLLER] Deleting product'
+			);
 		});
 
 		test('should fail to list products', async () => {
@@ -119,14 +127,16 @@ describe('ProductController -> Test', () => {
 			await controller.deleteProducts(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected when deleting for product: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/delete-products-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/delete-products-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -168,7 +178,9 @@ describe('ProductController -> Test', () => {
 
 			expect(reply.code).toHaveBeenCalledWith(201);
 			expect(reply.send).toHaveBeenCalledWith(product);
-			expect(loggerSpy).toHaveBeenCalledWith('Creating product: ""');
+			expect(loggerSpy).toHaveBeenCalledWith(
+				'[PRODUCT CONTROLLER] Creating product: ""'
+			);
 		});
 
 		test('should fail to update products', async () => {
@@ -213,14 +225,16 @@ describe('ProductController -> Test', () => {
 			await controller.createProducts(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected when creating for product: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/create-products-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/create-products-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -264,7 +278,7 @@ describe('ProductController -> Test', () => {
 			expect(reply.code).toHaveBeenCalledWith(200);
 			expect(reply.send).toHaveBeenCalledWith(product);
 			expect(loggerSpy).toHaveBeenCalledWith(
-				`Updating product ${req?.params?.id}`
+				`[PRODUCT CONTROLLER] Updating product ${req?.params?.id}`
 			);
 		});
 
@@ -311,14 +325,16 @@ describe('ProductController -> Test', () => {
 			await controller.updateProducts(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when trying to update product: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/update-products-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/update-products-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 });

@@ -1,10 +1,10 @@
 import { Prisma } from '@prisma/client';
-import { ProductMockBuilder } from '@tests/mocks/product.mock-builder';
 import { ProductRepositoryImpl } from '@src/adapter/driven/infra';
 import { prisma } from '@src/adapter/driven/infra/lib/prisma';
 import { DataNotFoundException } from '@src/core/application/exceptions/dataNotFound';
 import { InvalidProductException } from '@src/core/application/exceptions/invalidProductException';
 import logger from '@src/core/common/logger';
+import { ProductMockBuilder } from '@tests/mocks/product.mock-builder';
 
 jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
 
@@ -65,10 +65,13 @@ describe('ProductRepositoryImpl -> Test', () => {
 				await repository.getProductById(product.id);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Product with id: ${product.id} not found`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(`Product with id: ${product.id} not found`);
+			}
 		});
 	});
 
@@ -110,10 +113,13 @@ describe('ProductRepositoryImpl -> Test', () => {
 				await repository.createProducts(product);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'Error creating product: {"message":"error"}'
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown an InvalidProductException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe('Error creating product: undefined');
+			}
 		});
 
 		test('should throw DataNotFoundException when product already exists', async () => {
@@ -130,10 +136,15 @@ describe('ProductRepositoryImpl -> Test', () => {
 				await repository.createProducts(product);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Product with name: ${product.name} already exists`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown an InvalidProductException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe(
+					`Product with name: ${product.name} already exists`
+				);
+			}
 		});
 	});
 

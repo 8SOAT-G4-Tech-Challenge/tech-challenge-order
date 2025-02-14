@@ -9,6 +9,7 @@ import {
 	CreateOrderParams,
 	GetOrderByIdParams,
 	UpdateOrderParams,
+	GetOrderByIdQueryParams,
 } from '@ports/input/orders';
 import { CreateOrderResponse } from '@ports/output/orders';
 import { CartRepository } from '@ports/repository/cartRepository';
@@ -82,7 +83,11 @@ export class OrderService {
 		return this.sortOrdersByStatus(joinedData);
 	}
 
-	async getOrderById({ id }: GetOrderByIdParams): Promise<Order> {
+	async getOrderById({
+		id,
+		withCustomer,
+		withPayment,
+	}: GetOrderByIdParams & GetOrderByIdQueryParams): Promise<Order> {
 		const { success } = getOrderByIdSchema.safeParse({ id });
 
 		if (!success) {
@@ -94,7 +99,7 @@ export class OrderService {
 		logger.info(`Searching order by Id: ${id}`);
 		const orderFound = await this.orderRepository.getOrderById({ id });
 
-		if (orderFound.customerId) {
+		if (withCustomer && orderFound.customerId) {
 			logger.info(`Searching customer in order: ${orderFound.customerId}`);
 			const customer = await this.customerApi.getCustomerByProperty({
 				id: orderFound.customerId,
@@ -103,13 +108,15 @@ export class OrderService {
 			Object.assign(orderFound, { customer });
 		}
 
-		logger.info(`Searching payment order in order: ${orderFound.id}`);
-		const paymentOrder = await this.paymentOrderApi.getPaymentOrderByOrderId({
-			orderId: orderFound.id,
-		});
+		if (withPayment) {
+			logger.info(`Searching payment order in order: ${orderFound.id}`);
+			const paymentOrder = await this.paymentOrderApi.getPaymentOrderByOrderId({
+				orderId: orderFound.id,
+			});
 
-		if (paymentOrder) {
-			Object.assign(orderFound, { payment: paymentOrder });
+			if (paymentOrder && Object.values(paymentOrder).length) {
+				Object.assign(orderFound, { payment: paymentOrder });
+			}
 		}
 
 		return orderFound;
@@ -218,5 +225,15 @@ export class OrderService {
 				priorityMap.get(b.status as OrderStatusType) ?? Infinity;
 			return priorityA - priorityB;
 		});
+	}
+
+	async getNumberOfValidOrdersToday(): Promise<number> {
+		logger.info('[ORDER SERVICE] Getting number of valid orders today');
+		const numberOrdersToday =
+			await this.orderRepository.getNumberOfValidOrdersToday();
+
+		logger.info(`[ORDER SERVICE] Valid orders today: ${numberOrdersToday}`);
+
+		return numberOrdersToday;
 	}
 }

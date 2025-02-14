@@ -18,6 +18,29 @@ export class CartController {
 		this.cartService = cartService;
 	}
 
+	async getAllCartItemsByOrderId(
+		req: FastifyRequest<{
+			Params: { orderId: string };
+		}>,
+		reply: FastifyReply
+	) {
+		try {
+			logger.info(
+				`[CART CONTROLLER] Getting all cart items by order ID: ${req?.params?.orderId}`
+			);
+			const orderItem: OrderItem[] =
+				await this.cartService.getAllCartItemsByOrderId(req?.params?.orderId);
+			reply.code(StatusCodes.CREATED).send(orderItem);
+		} catch (error) {
+			logger.error(
+				`Unexpected error when trying to add product to cart: ${JSON.stringify(
+					error
+				)}`
+			);
+			handleError(req, reply, error);
+		}
+	}
+
 	async addItemToCart(
 		req: FastifyRequest<{
 			Params: { orderId: string };
@@ -26,7 +49,9 @@ export class CartController {
 		reply: FastifyReply
 	) {
 		try {
-			logger.info(`Adding item to order: ${req?.params?.orderId}`);
+			logger.info(
+				`[CART CONTROLLER] Adding item to order: ${req?.params?.orderId}`
+			);
 			const orderItem: OrderItem = await this.cartService.addItemToCart({
 				...req.body,
 				orderId: req?.params?.orderId,
@@ -50,7 +75,7 @@ export class CartController {
 		reply: FastifyReply
 	) {
 		try {
-			logger.info(`Updating cart item ${req?.params?.id}`);
+			logger.info(`[CART CONTROLLER] Updating cart item ${req?.params?.id}`);
 			const orderItem: OrderItem = await this.cartService.updateCartItem({
 				...req.body,
 				id: req?.params?.id,
@@ -73,7 +98,7 @@ export class CartController {
 		reply: FastifyReply
 	) {
 		try {
-			logger.info(`Deleting cart item ${req?.params?.id}`);
+			logger.info(`[CART CONTROLLER] Deleting cart item ${req?.params?.id}`);
 
 			await this.cartService.deleteCartItem(req?.params?.id);
 

@@ -32,10 +32,12 @@ export class ProductController {
 		try {
 			if (req.query && Object.keys(req.query).length > 0) {
 				logger.info(
-					`Listing products with parameters: ${JSON.stringify(req.query)}`
+					`[PRODUCT CONTROLLER] Listing products with parameters: ${JSON.stringify(
+						req.query
+					)}`
 				);
 			} else {
-				logger.info('Listing products');
+				logger.info('[PRODUCT CONTROLLER] Listing products');
 			}
 
 			const response = await this.productService.getProducts(req.query);
@@ -56,7 +58,7 @@ export class ProductController {
 	): Promise<void> {
 		const { id } = req.params;
 		try {
-			logger.info('Deleting product');
+			logger.info('[PRODUCT CONTROLLER] Deleting product');
 			await this.productService.deleteProducts({ id });
 			reply
 				.code(StatusCodes.OK)
@@ -98,7 +100,9 @@ export class ProductController {
 				}
 			}
 
-			logger.info(`Creating product: ${JSON.stringify(data.name)}`);
+			logger.info(
+				`[PRODUCT CONTROLLER] Creating product: ${JSON.stringify(data.name)}`
+			);
 
 			const createdProduct = await this.productService.createProducts(data);
 			reply.code(StatusCodes.CREATED).send(createdProduct);
@@ -120,7 +124,7 @@ export class ProductController {
 		reply: FastifyReply
 	) {
 		try {
-			logger.info(`Updating product ${req?.params?.id}`);
+			logger.info(`[PRODUCT CONTROLLER] Updating product ${req?.params?.id}`);
 			const parts = req.parts();
 			let data: UpdateProductParams = {
 				id: req?.params?.id,

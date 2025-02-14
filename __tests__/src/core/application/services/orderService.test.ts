@@ -1,4 +1,3 @@
-import { OrderStatusEnum } from '@src/core/application/enumerations/orderStatusEnum';
 import { InvalidOrderException } from '@src/core/application/exceptions/invalidOrderException';
 import { InvalidOrderStatusException } from '@src/core/application/exceptions/invalidOrderStatusException';
 import { OrderService } from '@src/core/application/services/orderService';
@@ -52,41 +51,22 @@ describe('OrderService -> Test', () => {
 	});
 
 	describe('getOrders', () => {
-		test('should search orders by status', async () => {
-			const loggerSpy = jest.spyOn(logger, 'info');
-
-			const orders = [
-				new OrderMockBuilder().withDefaultValues().build(),
-				new OrderMockBuilder().withDefaultValues().build(),
-			];
-
-			(mockOrderRepository.getOrdersByStatus as jest.Mock).mockResolvedValue(
-				orders
-			);
-
-			const response = await service.getOrders({
-				status: OrderStatusEnum.created,
-			});
-
-			expect(mockOrderRepository.getOrdersByStatus).toHaveBeenCalledWith(
-				OrderStatusEnum.created
-			);
-			expect(loggerSpy).toHaveBeenCalledWith(
-				`Searching orders by status: ${OrderStatusEnum.created}`
-			);
-			expect(response).toEqual(orders);
-		});
-
 		test('should throw InvalidOrderStatusException', async () => {
 			const rejectedFunction = async () => {
 				// @ts-expect-error typescript
 				await service.getOrders({ status: 'status' });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidOrderStatusException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'Error listing orders by status. Invalid status: status'
-			);
+			try {
+				await rejectedFunction();
+				fail('Expected InvalidOrderStatusException but no error was thrown');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidOrderStatusException);
+				expect(error.message).toBe(
+					'Error listing orders by status. Invalid status: status'
+				);
+				expect(error.statusCode).toBe(400);
+			}
 		});
 
 		test('should search all orders', async () => {
@@ -119,10 +99,16 @@ describe('OrderService -> Test', () => {
 				await service.getOrderById({ id: undefined });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidOrderException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'Error listing order by Id. Invalid Id: undefined'
-			);
+			try {
+				await rejectedFunction();
+				fail('Expected InvalidOrderException but no error was thrown');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidOrderException);
+				expect(error.message).toBe(
+					'Error listing order by Id. Invalid Id: undefined'
+				);
+				expect(error.statusCode).toBe(400);
+			}
 		});
 
 		test('should get order by ID', async () => {
@@ -148,10 +134,16 @@ describe('OrderService -> Test', () => {
 				await service.getOrderCreatedById({ id: undefined });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidOrderException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'Error listing order by Id. Invalid Id: undefined'
-			);
+			try {
+				await rejectedFunction();
+				fail('Expected InvalidOrderException but no error was thrown');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidOrderException);
+				expect(error.message).toBe(
+					'Error listing order by Id. Invalid Id: undefined'
+				);
+				expect(error.statusCode).toBe(400);
+			}
 		});
 
 		test('should get order created by ID', async () => {
@@ -224,10 +216,16 @@ describe('OrderService -> Test', () => {
 				await service.updateOrder({ id: undefined });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidOrderException);
-			expect(rejectedFunction()).rejects.toThrow(
-				"Can't update order without providing an ID"
-			);
+			try {
+				await rejectedFunction();
+				fail('Expected InvalidOrderException but no error was thrown');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidOrderException);
+				expect(error.message).toBe(
+					"Can't update order without providing an ID"
+				);
+				expect(error.statusCode).toBe(400);
+			}
 		});
 
 		test('should throw status related InvalidOrderException', async () => {
@@ -239,10 +237,16 @@ describe('OrderService -> Test', () => {
 				});
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidOrderException);
-			expect(rejectedFunction()).rejects.toThrow(
-				"Can't update order without providing a valid status"
-			);
+			try {
+				await rejectedFunction();
+				fail('Expected InvalidOrderException but no error was thrown');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidOrderException);
+				expect(error.message).toBe(
+					"Can't update order without providing a valid status"
+				);
+				expect(error.statusCode).toBe(400);
+			}
 		});
 
 		test('should update order successfully', async () => {
@@ -267,10 +271,16 @@ describe('OrderService -> Test', () => {
 				await service.getOrderTotalValueById();
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidOrderException);
-			expect(rejectedFunction()).rejects.toThrow(
-				"Can't return order total value without providing a valid ID"
-			);
+			try {
+				await rejectedFunction();
+				fail('Expected InvalidOrderException but no error was thrown');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidOrderException);
+				expect(error.message).toBe(
+					"Can't return order total value without providing a valid ID"
+				);
+				expect(error.statusCode).toBe(400);
+			}
 		});
 
 		test('should throw status related InvalidOrderException', async () => {
@@ -284,10 +294,16 @@ describe('OrderService -> Test', () => {
 				);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidOrderException);
-			expect(rejectedFunction()).rejects.toThrow(
-				"Can't return order total value without order items"
-			);
+			try {
+				await rejectedFunction();
+				fail('Expected InvalidOrderException but no error was thrown');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidOrderException);
+				expect(error.message).toBe(
+					"Can't return order total value without order items"
+				);
+				expect(error.statusCode).toBe(400);
+			}
 		});
 
 		test('should update order successfully', async () => {

@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ZodError } from 'zod';
 
 import { BaseException } from '@exceptions/baseException';
+import logger from '@src/core/common/logger';
 
 type FastifyErrorHandler = FastifyInstance['errorHandler'];
 
@@ -10,20 +11,22 @@ export const errorHandler: FastifyErrorHandler = (error, request, reply) => {
 	const responseError = {
 		path: request.url,
 		status: StatusCodes.INTERNAL_SERVER_ERROR,
-		message: error.message,
+		message: error?.message || 'Generic error',
 	};
 
 	if (error instanceof ZodError) {
-		responseError.message = error.message;
+		responseError.message = error.errors
+			.map((err) => `${err.path.join('.')}: ${err?.message}`)
+			.join(', ');
 		responseError.status = StatusCodes.BAD_REQUEST;
 	}
 
 	if (error instanceof BaseException) {
-		responseError.message = error.message;
-		responseError.status = error.statusCode;
+		responseError.message = error?.message;
+		responseError.status = error?.statusCode;
 	}
 
-	reply.status(responseError.status).send(responseError);
+	reply.status(responseError.status).send(JSON.stringify(responseError));
 };
 
 export function handleError(
@@ -35,20 +38,22 @@ export function handleError(
 	const responseError = {
 		path: req.url,
 		status: StatusCodes.INTERNAL_SERVER_ERROR,
-		message: message || error.message,
+		message: message || error?.message || 'Generic error',
 	};
 
 	if (error instanceof ZodError) {
 		responseError.message = error.errors
-			.map((err) => `${err.path.join('.')}: ${err.message}`)
+			.map((err) => `${err.path.join('.')}: ${err?.message}`)
 			.join(', ');
 		responseError.status = StatusCodes.BAD_REQUEST;
 	}
 
 	if (error instanceof BaseException) {
-		responseError.message = error.message;
-		responseError.status = error.statusCode;
+		responseError.message = error?.message;
+		responseError.status = error?.statusCode;
 	}
 
-	reply.status(responseError.status).send(responseError);
+	logger.error(`[❌ ERROR HANDLER] Unexpected error: ${JSON.stringify(error)}`);
+
+	reply.status(responseError.status).send(JSON.stringify(responseError));
 }

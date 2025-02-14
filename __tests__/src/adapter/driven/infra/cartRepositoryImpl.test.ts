@@ -81,10 +81,15 @@ describe('CartRepositoryImpl -> Test', () => {
 				await repository.updateCartItem(addItemToCart);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Order item with id: ${addItemToCart.id} not found`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(
+					`Order item with id: ${addItemToCart.id} not found`
+				);
+			}
 		});
 	});
 
@@ -112,10 +117,13 @@ describe('CartRepositoryImpl -> Test', () => {
 				await repository.deleteCartItem(id);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Order item with id: ${id} not found`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(`Order item with id: ${id} not found`);
+			}
 		});
 	});
 
@@ -152,10 +160,13 @@ describe('CartRepositoryImpl -> Test', () => {
 				await repository.getCartItemById(id);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Order item with id: ${id} not found`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(`Order item with id: ${id} not found`);
+			}
 		});
 	});
 

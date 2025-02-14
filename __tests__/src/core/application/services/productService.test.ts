@@ -1,10 +1,10 @@
-import { CreateProductMockBuilder } from '@tests/mocks/create-product.mock-builder';
-import { ProductCategoryMockBuilder } from '@tests/mocks/product-category.mock-builder';
-import { ProductMockBuilder } from '@tests/mocks/product.mock-builder';
 import { DataNotFoundException } from '@src/core/application/exceptions/dataNotFound';
 import { InvalidProductException } from '@src/core/application/exceptions/invalidProductException';
 import { ProductService } from '@src/core/application/services/productService';
 import logger from '@src/core/common/logger';
+import { CreateProductMockBuilder } from '@tests/mocks/create-product.mock-builder';
+import { ProductCategoryMockBuilder } from '@tests/mocks/product-category.mock-builder';
+import { ProductMockBuilder } from '@tests/mocks/product.mock-builder';
 
 describe('ProductService -> Test', () => {
 	let service: ProductService;
@@ -95,7 +95,9 @@ describe('ProductService -> Test', () => {
 			expect(productRepository.getProductsByCategory).toHaveBeenCalled();
 			expect(response).toEqual(products);
 			expect(loggerSpy).toHaveBeenCalledWith(
-				`Success search product category ${JSON.stringify(productCategory)}`
+				`[PRODUCT SERVICE] Success search product category ${JSON.stringify(
+					productCategory
+				)}`
 			);
 		});
 	});
@@ -120,10 +122,15 @@ describe('ProductService -> Test', () => {
 				await service.deleteProducts({ id: undefined });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'Error deleting product by Id. Invalid Id: undefined'
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown an InvalidProductException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe(
+					'Error deleting product by Id. Invalid Id: undefined'
+				);
+			}
 		});
 
 		test('should throw InvalidProductException when product is not found', async () => {
@@ -135,10 +142,15 @@ describe('ProductService -> Test', () => {
 				await service.deleteProducts({ id: product.id });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(Error);
-			expect(rejectedFunction()).rejects.toThrow(
-				'An unexpected error occurred while deleting'
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown an error');
+			} catch (error) {
+				expect(error).toBeInstanceOf(Error);
+				expect(error.message).toBe(
+					'An unexpected error occurred while deleting'
+				);
+			}
 		});
 
 		test('should delete product succesfully', async () => {
@@ -153,7 +165,7 @@ describe('ProductService -> Test', () => {
 			await service.deleteProducts({ id: product.id });
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				`Directory for product ${product.id} has been removed.`
+				`[PRODUCT SERVICE] Directory for product ${product.id} has been removed.`
 			);
 		});
 	});
@@ -172,10 +184,15 @@ describe('ProductService -> Test', () => {
 				});
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				"There's a problem with parameters sent, check documentation"
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown an InvalidProductException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe(
+					"There's a problem with parameters sent, check documentation"
+				);
+			}
 		});
 
 		test('should create product without image', async () => {
@@ -221,10 +238,15 @@ describe('ProductService -> Test', () => {
 				});
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(InvalidProductException);
-			expect(rejectedFunction()).rejects.toThrow(
-				"There's a problem with parameters sent, check documentation"
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown an InvalidProductException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductException);
+				expect(error.message).toBe(
+					"There's a problem with parameters sent, check documentation"
+				);
+			}
 		});
 
 		test('should throw DataNotFoundException when product is not found', async () => {
@@ -241,10 +263,15 @@ describe('ProductService -> Test', () => {
 				});
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Product with id ${product.id} does not exist`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(
+					`Product with id ${product.id} does not exist`
+				);
+			}
 		});
 
 		test('should update product', async () => {

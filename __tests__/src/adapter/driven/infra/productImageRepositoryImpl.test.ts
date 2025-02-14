@@ -1,7 +1,7 @@
-import { ProductImageMockBuilder } from '@tests/mocks/product-image.mock-builder';
 import { ProductImageRepositoryImpl } from '@src/adapter/driven/infra';
 import { prisma } from '@src/adapter/driven/infra/lib/prisma';
 import { DataNotFoundException } from '@src/core/application/exceptions/dataNotFound';
+import { ProductImageMockBuilder } from '@tests/mocks/product-image.mock-builder';
 
 jest.useFakeTimers().setSystemTime(new Date('2020-01-01'));
 
@@ -44,15 +44,20 @@ describe('ProductImageRepositoryImpl -> Test', () => {
 				await repository.getProductImageById(productImage);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Product Image with id: ${productImage.id} not found`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(
+					`Product Image with id: ${productImage.id} not found`
+				);
+			}
 		});
 	});
 
 	describe('createProductImage', () => {
-		test('should get product image by ID', async () => {
+		test('should create product image', async () => {
 			const productImage = new ProductImageMockBuilder()
 				.withDefaultValues()
 				.build();
@@ -77,10 +82,13 @@ describe('ProductImageRepositoryImpl -> Test', () => {
 				await repository.createProductImage(productImage);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				'Error creating product image'
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe('Error creating product image');
+			}
 		});
 	});
 
@@ -112,10 +120,15 @@ describe('ProductImageRepositoryImpl -> Test', () => {
 				await repository.deleteProductImageByProductId(productImage.productId);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(DataNotFoundException);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Product Image with productId: ${productImage.productId} not found`
-			);
+			try {
+				await rejectedFunction();
+				fail('The function should have thrown a DataNotFoundException');
+			} catch (error) {
+				expect(error).toBeInstanceOf(DataNotFoundException);
+				expect(error.message).toBe(
+					`Product Image with productId: ${productImage.productId} not found`
+				);
+			}
 		});
 	});
 });

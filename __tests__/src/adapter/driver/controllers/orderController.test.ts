@@ -1,6 +1,6 @@
-import { OrderMockBuilder } from '@tests/mocks/order.mock-builder';
 import { OrderController } from '@src/adapter/driver/controllers/orderController';
 import logger from '@src/core/common/logger';
+import { OrderMockBuilder } from '@tests/mocks/order.mock-builder';
 
 describe('OrderController -> Test', () => {
 	let controller: OrderController;
@@ -53,14 +53,16 @@ describe('OrderController -> Test', () => {
 			await controller.getOrders(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when trying to get orders: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/get-orders-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/get-orders-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -96,14 +98,16 @@ describe('OrderController -> Test', () => {
 			await controller.getOrderById(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when trying to list order by id: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/get-orders-by-id-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/get-orders-by-id-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -139,14 +143,16 @@ describe('OrderController -> Test', () => {
 			await controller.createOrder(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when trying to create order: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/create-order-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/create-order-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 
@@ -182,14 +188,16 @@ describe('OrderController -> Test', () => {
 			await controller.updateOrder(req as any, reply as any);
 
 			expect(loggerSpy).toHaveBeenCalledWith(
-				'Unexpected error when trying to update order: {"message":"error"}'
+				'[❌ ERROR HANDLER] Unexpected error: {"message":"error"}'
 			);
 			expect(reply.status).toHaveBeenCalledWith(500);
-			expect(reply.send).toHaveBeenCalledWith({
-				message: 'error',
-				path: '/create-order-mock',
-				status: 500,
-			});
+			expect(reply.send).toHaveBeenCalledWith(
+				JSON.stringify({
+					path: '/create-order-mock',
+					status: 500,
+					message: 'error',
+				})
+			);
 		});
 	});
 });

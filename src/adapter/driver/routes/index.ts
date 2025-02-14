@@ -117,6 +117,14 @@ export const routes = async (fastify: FastifyInstance) => {
 		'/totem/orders/:id',
 		orderController.updateOrder.bind(orderController)
 	);
+	fastify.get(
+		'/totem/orders/valid-orders-today',
+		orderController.getNumberOfValidOrdersToday.bind(orderController)
+	);
+	fastify.get(
+		'/totem/order-items/:orderId',
+		cartController.getAllCartItemsByOrderId.bind(cartController)
+	);
 	fastify.post(
 		'/totem/order-items/:orderId',
 		cartController.addItemToCart.bind(cartController)

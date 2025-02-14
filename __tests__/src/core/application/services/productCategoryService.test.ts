@@ -1,6 +1,6 @@
-import { ProductCategoryMockBuilder } from '@tests/mocks/product-category.mock-builder';
 import { InvalidProductCategoryException } from '@src/core/application/exceptions/invalidProductCategoryException';
 import { ProductCategoryService } from '@src/core/application/services/productCategoryService';
+import { ProductCategoryMockBuilder } from '@tests/mocks/product-category.mock-builder';
 
 describe('ProductCategoryService -> Test', () => {
 	let service: ProductCategoryService;
@@ -102,12 +102,15 @@ describe('ProductCategoryService -> Test', () => {
 				);
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(
-				InvalidProductCategoryException
-			);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Category Product with ID ${productCategory.id} not found.`
-			);
+			try {
+				await rejectedFunction();
+				fail('Expected InvalidProductCategoryException to be thrown');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductCategoryException);
+				expect(error.message).toBe(
+					`Category Product with ID ${productCategory.id} not found.`
+				);
+			}
 		});
 
 		test('should update product category', async () => {
@@ -148,12 +151,15 @@ describe('ProductCategoryService -> Test', () => {
 				await service.deleteProductCategory({ id: productCategory.id });
 			};
 
-			expect(rejectedFunction()).rejects.toThrow(
-				InvalidProductCategoryException
-			);
-			expect(rejectedFunction()).rejects.toThrow(
-				`Category Product with ID ${productCategory.id} not found.`
-			);
+			try {
+				await rejectedFunction();
+				fail('Expected InvalidProductCategoryException to be thrown');
+			} catch (error) {
+				expect(error).toBeInstanceOf(InvalidProductCategoryException);
+				expect(error.message).toBe(
+					`Category Product with ID ${productCategory.id} not found.`
+				);
+			}
 		});
 
 		test('should not delete product category when it has at least one product associated to it', async () => {
