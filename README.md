@@ -12,11 +12,11 @@ Este serviço tem como objetivo gerenciar todas as operações relacionadas a pe
 
 A partir dos dados fornecidos, este microsserviço:
 
-- Gerencia as categorias de produtos: permite a criação, atualização e exclusão de categorias como lanches, bebidas e sobremesas. As categorias são utilizadas para organizar os produtos e facilitar a navegação e o gerenciamento do catálogo.
+- Gerencia as categorias de produtos: permite a criação, atualização e exclusão de categorias de produtos. As categorias são utilizadas para organizar os produtos e facilitar a navegação e o gerenciamento do catálogo.
 
-- Gerencia os produtos: possibilita o cadastro, atualização e remoção de produtos que podem ser comercializados nos pedidos. Cada produto possui atributos como nome, descrição, preço, disponibilidade e categoria associada.
+- Gerencia os produtos: possibilita o cadastro, atualização e remoção de produtos que podem ser comercializados nos pedidos. Cada produto possui atributos como nome, descrição, imagens, preço e categoria associada.
 
-- Gerencia os pedidos: permite a criação, atualização e exclusão de pedidos realizados pelos clientes. Um pedido contém múltiplos itens e tem status que refletem seu progresso, como "pendente", "em preparo" e "pronto".
+- Gerencia os pedidos: permite a criação, atualização e exclusão de pedidos realizados pelos clientes. Um pedido contém múltiplos itens e tem status que refletem seu progresso, como "pendente", "em preparo", "pronto", entre outros.
 
 - Gera e controla a lógica de número de pedido: atribui um identificador único e legível para cada pedido, permitindo que o cliente acompanhe a produção em tempo real.
 
